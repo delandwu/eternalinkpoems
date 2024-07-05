@@ -39,6 +39,20 @@ const { title, meta_title, description, image, noindex, canonical } =
       noindex={noindex}
       canonical={canonical}
     />
+    <!-- Google tag (gtag.js) -->
+    <script
+      type="text/partytown"
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=MEASUREMENT_ID"></script>
+    <script type="text/partytown">
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-41J1E3SVCL");
+    </script>
   </head>
   <body>
     <TwSizeIndicator />
@@ -61,12 +75,7 @@ const { title, meta_title, description, image, noindex, canonical } =
 
     <Footer {...footerConfig} />
 
-    <Toaster
-      className="mt-14"
-      position="top-right"
-      richColors
-      client:load
-    />
+    <Toaster className="mt-14" position="top-right" richColors client:load />
 
     <BasicScripts />
   </body>

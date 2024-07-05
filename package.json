@@ -1,7 +1,7 @@
 {
   "name": "haitang",
   "version": "1.0.0",
-  "description": "永恆墨詩，古诗词的数字桃源",
+  "description": "永恆墨詩，匯聚了眾多詩人傑作的數字綠洲",
   "author": "javayhu",
   "license": "MIT",
   "packageManager": "yarn@1.22.19",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^2.1.1",
-    "@astrojs/partytown": "^2.0.4",
+    "@astrojs/partytown": "^2.1.1",
     "@astrojs/react": "^3.0.9",
     "@astrojs/rss": "^4.0.4",
     "@astrojs/sitemap": "^3.0.5",

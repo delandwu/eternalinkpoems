@@ -1,8 +1,8 @@
-<h1 align=center>海棠诗社</h1>
+<h1 align=center>永恆墨詩</h1>
 
-<p align=center>https://haitang.app | https://haitang.vercel.app</p>
+<p align=center>https://eternalinkpoems.com | https://haitang.vercel.app</p>
 
-<p align=center>海棠诗社，古诗词的数字桃源</p>
+<p align=center>永恆墨詩，古诗词的数字桃源</p>
 
 <p align=center>如果觉得这个项目不错的话，可以点个⭐，非常感谢 </p>
 
@@ -10,9 +10,9 @@
 
 ## 📌 Key Features
 
-- 🎯 海棠诗社按诗集、朝代、诗人、诗词等方式检索，内容丰富，信息齐全
-- 📝 海棠诗社按选集、主题、节日、节气、词牌、时令、地理等方式精选分类
-- 🔍 海棠诗社全站响应式布局，兼容移动端，支持暗黑模式，响应速度快
+- 🎯 永恆墨詩按诗集、朝代、诗人、诗词等方式检索，内容丰富，信息齐全
+- 📝 永恆墨詩按选集、主题、节日、节气、词牌、时令、地理等方式精选分类
+- 🔍 永恆墨詩全站响应式布局，兼容移动端，支持暗黑模式，响应速度快
 
 
 ## ✨ Tech Stacks
@@ -27,9 +27,9 @@
 
 Fork这个项目，然后在Vercel中新建项目，选择Github仓库，配置默认即可。
 
-开源版本的海棠诗社：https://haitang.vercel.app
+开源版本的永恆墨詩：https://haitang.vercel.app
 
-现网版本的海棠诗社：https://haitang.app
+现网版本的永恆墨詩：https://eternalinkpoems.com
 
 
 ## 🚀 Getting Started
@@ -57,7 +57,7 @@ yarn build
 
 - 项目代码的差异：没有差异，完全开源。
 
-- 部署平台的差异：开源版本的海棠诗社是部署在Vercel上，需要科学上网才能访问。现网版本的海棠诗社是部署在Netlify上，绑定了自购域名，所以国内可以直接访问。本项目是纯静态网站，也可以稍微修改代码在其他平台上部署，例如CloudFlare。
+- 部署平台的差异：开源版本的永恆墨詩是部署在Vercel上，需要科学上网才能访问。现网版本的永恆墨詩是部署在Netlify上，绑定了自购域名，所以国内可以直接访问。本项目是纯静态网站，也可以稍微修改代码在其他平台上部署，例如CloudFlare。
 
 - 网站功能的差异：开源版本去掉了注册登录的功能，原因：简化开源版本的上手流程。这些功能跟主体的诗词学习功能无关，加上的话还要配置 Supabase + Github OAuth + Resend。若对注册登录等逻辑感兴趣的话，可以看[这次代码提交](https://github.com/javayhu/haitang/commit/d8febb388bc9fe1fdd9a559c3e0e017e7fe5fff2)之前的代码，可自行配置。
 

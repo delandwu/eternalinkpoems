@@ -1,12 +1,12 @@
 ---
 enable: true
-# title: "此情此景，想不想吟诗一首?"
-title: "心动不如行动，赶紧加入诗社!"
+# title: "此情此景，想不想吟詩一首?"
+title: "心動不如行動，趕緊分享給朋友!"
 image: "/images/call-to-action.png"
-# description: "海棠诗社携手AI，共赴一场诗意悠长的作诗之旅"
-description: "加入海棠诗社，共赏诗词之美，和社友共享诗词的快乐时光"
+# description: "永恆墨詩攜手AI，共赴一場詩意悠長的作詩之旅"
+description: "加入永恆墨詩，共賞詩詞之美，和朋友共享詩詞的快樂時光"
 button:
   enable: true
-  label: "🔥 每日一诗"
+  label: "🔥 每日一詩"
   link: "/today"
 ---

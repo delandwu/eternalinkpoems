@@ -250,7 +250,7 @@ const SearchResult = ({
               </svg>
               <p className="mt-4">
                 {/* No results for &quot;<strong>{searchString}</strong>&quot; */}
-                暂无相关内容
+                暫無相關內容
               </p>
             </div>
           )}
@@ -258,7 +258,7 @@ const SearchResult = ({
       ) : (
         <div className="py-8 text-center">
           {/* Type something to search... */}
-          请输入搜索内容，并按回车键开始搜索...
+          請輸入搜索內容，並按回車鍵開始搜索...
         </div>
       )}
     </div>

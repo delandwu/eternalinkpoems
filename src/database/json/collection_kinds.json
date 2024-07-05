@@ -3,56 +3,56 @@
 	{
 		"id" : 1,
 		"show_order" : 1,
-		"name" : "选集",
+		"name" : "選集",
 		"limit" : 8,
 		"name_tr" : "選集"
 	},
 	{
 		"id" : 2,
 		"show_order" : 3,
-		"name" : "主题",
+		"name" : "主題",
 		"limit" : 12,
 		"name_tr" : "主題"
 	},
 	{
 		"id" : 3,
 		"show_order" : 4,
-		"name" : "写景",
+		"name" : "寫景",
 		"limit" : 16,
 		"name_tr" : "寫景"
 	},
 	{
 		"id" : 4,
 		"show_order" : 5,
-		"name" : "节日",
+		"name" : "節日",
 		"limit" : 8,
 		"name_tr" : "節日"
 	},
 	{
 		"id" : 5,
 		"show_order" : 7,
-		"name" : "节气",
+		"name" : "節氣",
 		"limit" : 24,
 		"name_tr" : "節氣"
 	},
 	{
 		"id" : 6,
 		"show_order" : 12,
-		"name" : "课本",
+		"name" : "課本",
 		"limit" : 8,
 		"name_tr" : "課本"
 	},
 	{
 		"id" : 7,
 		"show_order" : 8,
-		"name" : "词牌",
+		"name" : "詞牌",
 		"limit" : 8,
 		"name_tr" : "詞牌"
 	},
 	{
 		"id" : 8,
 		"show_order" : 10,
-		"name" : "时令",
+		"name" : "時令",
 		"limit" : 8,
 		"name_tr" : "時令"
 	},
@@ -80,7 +80,7 @@
 	{
 		"id" : 25,
 		"show_order" : 9,
-		"name" : "时间",
+		"name" : "時間",
 		"limit" : 12,
 		"name_tr" : "時間"
 	},
@@ -101,7 +101,7 @@
 	{
 		"id" : 28,
 		"show_order" : 0,
-		"name" : "书籍",
+		"name" : "書籍",
 		"limit" : 8,
 		"name_tr" : "書籍"
 	}

@@ -1,31 +1,31 @@
 export const headerConfig = {
   links: [
     {
-      text: '首页',
+      text: '首頁',
       href: '/',
     },
     // {
-    //   text: '诗词 + AI',
+    //   text: '詩詞 + AI',
     //   href: '/ai',
     // },
     {
-      text: '每日一诗 🔥',
+      text: '每日一詩 🔥',
       href: '/today',
     },
     {
-      text: '诗集',
+      text: '詩集',
       // href: '/collections',
       links: [
         {
-          text: '所有诗集 🔥',
+          text: '所有詩集 🔥',
           href: '/collections',
         },
         {
-          text: '唐诗三百首',
+          text: '唐詩三百首',
           href: '/collections/1',
         },
         {
-          text: '宋词三百首',
+          text: '宋詞三百首',
           href: '/collections/2',
         },
         {
@@ -33,24 +33,24 @@ export const headerConfig = {
           href: '/collections/109',
         },
         {
-          text: '给孩子的诗',
+          text: '給孩子的詩',
           href: '/collections/3',
         },
       ],
     },
     {
-      text: '诗词',
+      text: '詩詞',
       links: [
         {
-          text: '按朝代检索 🔥',
+          text: '按朝代檢索 🔥',
           href: '/dynasties',
         },
         {
-          text: '所有诗人',
+          text: '所有詩人',
           href: '/authors',
         },
         {
-          text: '所有诗词',
+          text: '所有詩詞',
           href: '/works',
         },
       ],

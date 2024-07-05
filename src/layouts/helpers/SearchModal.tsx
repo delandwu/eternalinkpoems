@@ -175,7 +175,7 @@ const SearchModal = () => {
           </label>
           <input
             id="searchInput"
-            placeholder="请输入搜索内容，并按回车键开始搜索..."
+            placeholder="請輸入搜索內容，並按回車鍵開始搜索..."
             className="search-wrapper-header-input"
             type="input"
             name="search"
@@ -209,7 +209,7 @@ const SearchModal = () => {
               </svg>
             </kbd>
             {/* to navigate */}
-            上下导航
+            上下導航
           </span>
           <span className="flex items-center">
             <kbd>
@@ -226,20 +226,20 @@ const SearchModal = () => {
               </svg>
             </kbd>
             {/* to select */}
-            进入条目
+            進入條目
           </span>
           <span>
-            <kbd>CMD/CTRL+K</kbd> {/* to close */}打开搜索
+            <kbd>CMD/CTRL+K</kbd> {/* to close */}打開搜索
           </span>
           <span>
-            <kbd>ESC</kbd> {/* to close */}关闭搜索
+            <kbd>ESC</kbd> {/* to close */}關閉搜索
           </span>
 
           {searchString && (
             <span>
               {/* <strong>{searchResult.length} </strong> results - in{" "}
               <strong>{totalTime} </strong> seconds */}
-              <strong>{searchResult.length} </strong> 结果 - {" "}
+              <strong>{searchResult.length} </strong> 結果 - {" "}
               <strong>{totalTime} </strong> 秒
             </span>
           )}

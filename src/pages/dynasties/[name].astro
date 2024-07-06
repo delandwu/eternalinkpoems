@@ -47,7 +47,7 @@ const works = await db
   .where(eq(table_works.dynasty, dynasty.name))
   .orderBy(desc(table_works.show_order));
 
-// const description = `诗人:${authors.length} 作品: ${works.length}`;
+// const description = `詩人:${authors.length} 作品: ${works.length}`;
 const title = dynasty.name;
 const meta_title = dynasty.name + " - " + config.site.title;
 const description = dynasty.intro ? dynasty.intro.slice(0, 300) : dynasty.name;
@@ -61,7 +61,7 @@ const canonical = config.site.base_url + `/dynasties/${name}`;
       <div class="justify-center mt-10 flex flex-row gap-6">
         <Button variant="default" size="sm" className="">
           <a href="#authors">
-            诗人({authors.length})
+            詩人({authors.length})
           </a>
         </Button>
 
@@ -72,12 +72,12 @@ const canonical = config.site.base_url + `/dynasties/${name}`;
         </Button>
       </div>
 
-      <!-- 朝代简介 -->
-      <SubTitle title="简介" description="" />
+      <!-- 朝代簡介 -->
+      <SubTitle title="簡介" description="" />
       <span class="">{dynasty.intro}</span>
 
-      <!-- 诗人列表 -->
-      <SubTitle id="authors" title="诗人" description={`(${authors.length})`} />
+      <!-- 詩人列表 -->
+      <SubTitle id="authors" title="詩人" description={`(${authors.length})`} />
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
@@ -101,7 +101,7 @@ const canonical = config.site.base_url + `/dynasties/${name}`;
                       author.intro === "undefined" ||
                       author.intro === "NONE" ||
                       author.intro === "None"
-                        ? "暂无简介"
+                        ? "暫無簡介"
                         : author.intro}
                     </CardDescription>
                   </CardHeader>

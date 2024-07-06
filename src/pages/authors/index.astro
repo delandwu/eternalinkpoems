@@ -13,14 +13,14 @@ import CategoryElements from "@/components/CategoryElements";
 
 export const prerender = true;
 
-const title = "诗人" + " - " + config.site.title; // "Authors";
+const title = "詩人" + " - " + config.site.title; // "Authors";
 
 let dynasties = await db
   .select()
   .from(table_dynasties)
   .orderBy(asc(table_dynasties.start_year));
 
-// 暂时不以views_count来排序，这样的话hot显示就会更好看些，避免扎堆
+// 暫時不以views_count來排序，這樣的話hot顯示就會更好看些，避免扎堆
 let authors = await db.select().from(table_authors);
 /* .orderBy(desc(table_authors.views_count)) */ const works = await db
   .select()
@@ -51,7 +51,7 @@ authorsByDynasty = authorsByDynasty.map((dynasty) => ({
 }));
 // console.log(authorsByDynasty);
 
-const description = '所有诗人列表';
+const description = '所有詩人列表';
 const canonical = config.site.base_url + `/authors`;
 ---
 

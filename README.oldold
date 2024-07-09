@@ -2,17 +2,17 @@
 
 <p align=center>https://eternalinkpoems.com | https://haitang.vercel.app</p>
 
-<p align=center>永恆墨詩，古诗词的数字桃源</p>
+<p align=center>永恆墨詩，古詩詞的數字桃源</p>
 
-<p align=center>如果觉得这个项目不错的话，可以点个⭐，非常感谢 </p>
+<p align=center>如果覺得這個項目不錯的話，可以點個⭐，非常感謝 </p>
 
 ![image](public/images/screenshot.png)
 
 ## 📌 Key Features
 
-- 🎯 永恆墨詩按诗集、朝代、诗人、诗词等方式检索，内容丰富，信息齐全
-- 📝 永恆墨詩按选集、主题、节日、节气、词牌、时令、地理等方式精选分类
-- 🔍 永恆墨詩全站响应式布局，兼容移动端，支持暗黑模式，响应速度快
+- 🎯 永恆墨詩按詩集、朝代、詩人、詩詞等方式檢索，內容豐富，信息齊全
+- 📝 永恆墨詩按選集、主題、節日、節氣、詞牌、時令、地理等方式精選分類
+- 🔍 永恆墨詩全站響應式佈局，兼容移動端，支持暗黑模式，響應速度快
 
 
 ## ✨ Tech Stacks
@@ -25,11 +25,11 @@
 
 ## ⛳ Deployment
 
-Fork这个项目，然后在Vercel中新建项目，选择Github仓库，配置默认即可。
+Fork這個項目，然後在Vercel中新建項目，選擇Github倉庫，配置默認即可。
 
-开源版本的永恆墨詩：https://haitang.vercel.app
+開源版本的永恆墨詩：https://haitang.vercel.app
 
-现网版本的永恆墨詩：https://eternalinkpoems.com
+現網版本的永恆墨詩：https://eternalinkpoems.com
 
 
 ## 🚀 Getting Started
@@ -53,23 +53,23 @@ yarn build
 ```
 
 
-## ❓开源版本和现网版本有什么区别？
+## ❓開源版本和現網版本有什麼區別？
 
-- 项目代码的差异：没有差异，完全开源。
+- 項目代碼的差異：沒有差異，完全開源。
 
-- 部署平台的差异：开源版本的永恆墨詩是部署在Vercel上，需要科学上网才能访问。现网版本的永恆墨詩是部署在Netlify上，绑定了自购域名，所以国内可以直接访问。本项目是纯静态网站，也可以稍微修改代码在其他平台上部署，例如CloudFlare。
+- 部署平臺的差異：開源版本的永恆墨詩是部署在Vercel上，需要科學上網才能訪問。現網版本的永恆墨詩是部署在Netlify上，綁定了自購域名，所以國內可以直接訪問。本項目是純靜態網站，也可以稍微修改代碼在其他平臺上部署，例如CloudFlare。
 
-- 网站功能的差异：开源版本去掉了注册登录的功能，原因：简化开源版本的上手流程。这些功能跟主体的诗词学习功能无关，加上的话还要配置 Supabase + Github OAuth + Resend。若对注册登录等逻辑感兴趣的话，可以看[这次代码提交](https://github.com/javayhu/haitang/commit/d8febb388bc9fe1fdd9a559c3e0e017e7fe5fff2)之前的代码，可自行配置。
-
-
-## 📱 古诗词数据来源
-
-Thanks to [西窗烛](https://www.xczim.com/)
+- 網站功能的差異：開源版本去掉了註冊登錄的功能，原因：簡化開源版本的上手流程。這些功能跟主體的詩詞學習功能無關，加上的話還要配置 Supabase + Github OAuth + Resend。若對註冊登錄等邏輯感興趣的話，可以看[這次代碼提交](https://github.com/javayhu/haitang/commit/d8febb388bc9fe1fdd9a559c3e0e017e7fe5fff2)之前的代碼，可自行配置。
 
 
-## 👨‍💻 独立开发者导航站
+## 📱 古詩詞數據來源
 
-如果对独立开发感兴趣的话，不妨关注下 [独立开发者导航站](https://www.indiehackers.site)，发掘最优秀的产品工具，助力你快速发布你的下一个应用！或者关注 [我的推特](https://x.com/javayhu)，我会不定期分享独立开发相关的知识，一起成长，一起开发独立产品出海挣💰
+Thanks to [西窗燭](https://www.xczim.com/)
+
+
+## 👨‍💻 獨立開發者導航站
+
+如果對獨立開發感興趣的話，不妨關注下 [獨立開發者導航站](https://www.indiehackers.site)，發掘最優秀的產品工具，助力你快速發佈你的下一個應用！或者關注 [我的推特](https://x.com/javayhu)，我會不定期分享獨立開發相關的知識，一起成長，一起開發獨立產品出海掙💰
 
 
 ## 📝 License

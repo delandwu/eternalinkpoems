@@ -55,6 +55,10 @@ export const headerConfig = {
         },
       ],
     },
+    // {
+    //   text: '诗词百科',
+    //   href: '/libai-poetic',
+    // },
   ],
   actions: [
     // {

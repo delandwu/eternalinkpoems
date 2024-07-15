@@ -39,20 +39,27 @@ const { title, meta_title, description, image, noindex, canonical } =
       noindex={noindex}
       canonical={canonical}
     />
-    <!-- Google tag (gtag.js) -->
-    <script
-      type="text/partytown"
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=MEASUREMENT_ID"></script>
-    <script type="text/partytown">
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
 
-      gtag("config", "G-41J1E3SVCL");
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11268901351"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-11268901351');
     </script>
+
+    <!-- Event snippet for 网页浏览 conversion page -->
+    <script is:inline>
+        window.addEventListener('load', function () {
+            if (window.location.href.indexOf("https://www.eternalinkpoems.com/") != -1) {
+                gtag('event', 'conversion', {'send_to': 'AW-11269036913/81qHCJvC7MIZEPG2v_0p'});
+            }
+        })
+    </script>
+
+
   </head>
   <body>
     <TwSizeIndicator />

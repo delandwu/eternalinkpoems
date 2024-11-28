@@ -61,7 +61,8 @@ const canonical = config.site.base_url + `/works/${id}`;
         <div class="mt-14">
           <h1 class="text-2xl text-center">{work.title}</h1>
 
-          <div class="flex justify-center items-center mb-4">
+          <div class="flex flex-col items-center gap-2 mt-4">
+            <!-- 语音控制区域 -->
             <div class="inline-flex items-center gap-2">
               <div class="relative">
                 <button
@@ -77,14 +78,15 @@ const canonical = config.site.base_url + `/works/${id}`;
                     <line x1="8" y1="23" x2="16" y2="23"/>
                   </svg>
                 </button>
-                <!-- 语音选项菜单 -->
+                <!-- 语音选项菜单 - 修改定位和样式 -->
                 <div
                   id="voiceMenu"
-                  class="absolute left-0 top-full mt-1 w-[200px] py-1 rounded border 
-                  bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600
-                  shadow-lg hidden z-50"
+                  class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+                  w-[280px] py-1 rounded-lg border bg-white dark:bg-gray-800 
+                  border-gray-200 dark:border-gray-600 shadow-lg hidden z-50
+                  md:absolute md:left-0 md:top-full md:translate-x-0 md:translate-y-0"
                 >
-                  <div class="max-h-[200px] overflow-y-auto" id="voiceList">
+                  <div class="max-h-[300px] overflow-y-auto" id="voiceList">
                     <!-- 选项将由 JS 动态填充 -->
                   </div>
                 </div>
@@ -107,21 +109,22 @@ const canonical = config.site.base_url + `/works/${id}`;
                 </svg>
               </button>
             </div>
+
+            <!-- 作者和朝代信息 -->
+            <div class="flex items-center gap-2">
+              <a
+                href={`/dynasties/${work.dynasty}`}
+                class="animated-underline p-1 text-gray-500 dark:text-gray-300"
+              >[{work.dynasty}]</a>
+              <a
+                href={`/authors/${author_id}`}
+                class="animated-underline p-1 text-gray-500 dark:text-gray-300"
+              >{author_name}</a>
+            </div>
           </div>
 
-          <div class="flex justify-center items-center mb-4 mt-8">
-            <!-- <span class="mr-2">[{work.dynasty}]</span> -->
-            <a
-              href={`/dynasties/${work.dynasty}`}
-              class="animated-underline p-1 text-gray-500 dark:text-gray-300"
-              >[{work.dynasty}]</a
-            >
-            <a
-              href={`/authors/${author_id}`}
-              class="animated-underline p-1 text-gray-500 dark:text-gray-300"
-              >{author_name}</a
-            >
-          </div>
+          <!-- 添加遮罩层 -->
+          <div id="voiceMenuOverlay" class="fixed inset-0 bg-black/50 hidden z-40"></div>
 
           <!-- 居中佈局 -->
           {
@@ -287,19 +290,35 @@ const canonical = config.site.base_url + `/works/${id}`;
   const speakButton = document.getElementById('speakButton');
   const speakerIcon = document.getElementById('speakerIcon');
   const stopIcon = document.getElementById('stopIcon');
+  const overlay = document.getElementById('voiceMenuOverlay');
   
   // 点击其他地方时关闭菜单
   document.addEventListener('click', (event) => {
     if (!voiceMenuButton?.contains(event.target as Node) && 
         !voiceMenu?.contains(event.target as Node)) {
       voiceMenu?.classList.add('hidden');
+      overlay?.classList.add('hidden');
     }
   });
 
   // 切换菜单显示状态
   voiceMenuButton?.addEventListener('click', (event) => {
     event.stopPropagation();
-    voiceMenu?.classList.toggle('hidden');
+    const isHidden = voiceMenu?.classList.contains('hidden');
+    
+    if (isHidden) {
+      voiceMenu?.classList.remove('hidden');
+      overlay?.classList.remove('hidden');
+    } else {
+      voiceMenu?.classList.add('hidden');
+      overlay?.classList.add('hidden');
+    }
+  });
+
+  // 点击遮罩层时关闭菜单
+  overlay?.addEventListener('click', () => {
+    voiceMenu?.classList.add('hidden');
+    overlay?.classList.add('hidden');
   });
 
   // 获取可用的语音列表
@@ -317,15 +336,15 @@ const canonical = config.site.base_url + `/works/${id}`;
     voices.forEach((voice, i) => {
       if (voice.lang.includes('zh')) {
         const option = document.createElement('div');
-        option.className = `px-3 py-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 
+        option.className = `px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 
           ${i === selectedVoiceIndex ? 'bg-gray-100 dark:bg-gray-700' : ''}`;
         option.textContent = `${voice.name} (${voice.lang})`;
         option.addEventListener('click', () => {
           selectedVoiceIndex = i;
           loadVoices(); // 刷新选中状态
-          voiceMenu?.classList.add('hidden');
+          closeVoiceMenu();
         });
-        voiceList.appendChild(option);
+        voiceList?.appendChild(option);
       }
     });
   }
@@ -376,4 +395,10 @@ const canonical = config.site.base_url + `/works/${id}`;
 
   // 当语音列表加载完成时更新选项
   speechSynthesis.onvoiceschanged = loadVoices;
+
+  // 选择语音后关闭菜单和遮罩
+  function closeVoiceMenu() {
+    voiceMenu?.classList.add('hidden');
+    overlay?.classList.add('hidden');
+  }
 </script>

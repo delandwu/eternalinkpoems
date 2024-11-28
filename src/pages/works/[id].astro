@@ -292,7 +292,7 @@ const canonical = config.site.base_url + `/works/${id}`;
   const stopIcon = document.getElementById('stopIcon');
   const overlay = document.getElementById('voiceMenuOverlay');
   
-  // 点击其他地方时关闭菜单
+  // 修改点击事件处理
   document.addEventListener('click', (event) => {
     if (!voiceMenuButton?.contains(event.target as Node) && 
         !voiceMenu?.contains(event.target as Node)) {
@@ -301,7 +301,7 @@ const canonical = config.site.base_url + `/works/${id}`;
     }
   });
 
-  // 切换菜单显示状态
+  // 修改菜单按钮点击事件
   voiceMenuButton?.addEventListener('click', (event) => {
     event.stopPropagation();
     const isHidden = voiceMenu?.classList.contains('hidden');
@@ -315,7 +315,7 @@ const canonical = config.site.base_url + `/works/${id}`;
     }
   });
 
-  // 点击遮罩层时关闭菜单
+  // 添加遮罩层点击事件
   overlay?.addEventListener('click', () => {
     voiceMenu?.classList.add('hidden');
     overlay?.classList.add('hidden');
@@ -396,7 +396,7 @@ const canonical = config.site.base_url + `/works/${id}`;
   // 当语音列表加载完成时更新选项
   speechSynthesis.onvoiceschanged = loadVoices;
 
-  // 选择语音后关闭菜单和遮罩
+  // 添加关闭菜单的函数
   function closeVoiceMenu() {
     voiceMenu?.classList.add('hidden');
     overlay?.classList.add('hidden');

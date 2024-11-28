@@ -61,6 +61,54 @@ const canonical = config.site.base_url + `/works/${id}`;
         <div class="mt-14">
           <h1 class="text-2xl text-center">{work.title}</h1>
 
+          <div class="flex justify-center items-center mb-4">
+            <div class="inline-flex items-center gap-2">
+              <div class="relative">
+                <button
+                  id="voiceMenuButton"
+                  class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  title="选择语音"
+                >
+                  <!-- 人声图标 -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                </button>
+                <!-- 语音选项菜单 -->
+                <div
+                  id="voiceMenu"
+                  class="absolute left-0 top-full mt-1 w-[200px] py-1 rounded border 
+                  bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600
+                  shadow-lg hidden z-50"
+                >
+                  <div class="max-h-[200px] overflow-y-auto" id="voiceList">
+                    <!-- 选项将由 JS 动态填充 -->
+                  </div>
+                </div>
+              </div>
+              <button
+                id="speakButton"
+                class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                title="朗读"
+              >
+                <!-- 喇叭图标 - 默认状态 -->
+                <svg id="speakerIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+                <!-- 停止图标 - 播放时显示 -->
+                <svg id="stopIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <rect x="9" y="9" width="6" height="6" fill="currentColor"></rect>
+                </svg>
+              </button>
+            </div>
+          </div>
+
           <div class="flex justify-center items-center mb-4 mt-8">
             <!-- <span class="mr-2">[{work.dynasty}]</span> -->
             <a
@@ -225,3 +273,107 @@ const canonical = config.site.base_url + `/works/${id}`;
     </div>
   </section>
 </Base>
+
+<script>
+  let speechSynth = window.speechSynthesis;
+  const voices: SpeechSynthesisVoice[] = [];
+  let isPlaying = false;
+  let selectedVoiceIndex = 0;
+  
+  // 获取DOM元素
+  const voiceMenuButton = document.getElementById('voiceMenuButton');
+  const voiceMenu = document.getElementById('voiceMenu');
+  const voiceList = document.getElementById('voiceList');
+  const speakButton = document.getElementById('speakButton');
+  const speakerIcon = document.getElementById('speakerIcon');
+  const stopIcon = document.getElementById('stopIcon');
+  
+  // 点击其他地方时关闭菜单
+  document.addEventListener('click', (event) => {
+    if (!voiceMenuButton?.contains(event.target as Node) && 
+        !voiceMenu?.contains(event.target as Node)) {
+      voiceMenu?.classList.add('hidden');
+    }
+  });
+
+  // 切换菜单显示状态
+  voiceMenuButton?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    voiceMenu?.classList.toggle('hidden');
+  });
+
+  // 获取可用的语音列表
+  function loadVoices() {
+    const availableVoices = speechSynth.getVoices();
+    voices.length = 0;
+    voices.push(...availableVoices);
+    
+    if (!voiceList) return;
+    
+    // 清空现有选项
+    voiceList.innerHTML = '';
+    
+    // 只添加中文语音
+    voices.forEach((voice, i) => {
+      if (voice.lang.includes('zh')) {
+        const option = document.createElement('div');
+        option.className = `px-3 py-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 
+          ${i === selectedVoiceIndex ? 'bg-gray-100 dark:bg-gray-700' : ''}`;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.addEventListener('click', () => {
+          selectedVoiceIndex = i;
+          loadVoices(); // 刷新选中状态
+          voiceMenu?.classList.add('hidden');
+        });
+        voiceList.appendChild(option);
+      }
+    });
+  }
+
+  // 朗读功能
+  speakButton?.addEventListener('click', () => {
+    if (isPlaying) {
+      speechSynth.cancel();
+      togglePlayState(false);
+      return;
+    }
+
+    const contentElement = document.querySelector('pre');
+    if (!contentElement?.textContent) return;
+    
+    speechSynth.cancel();
+    const utterance = new SpeechSynthesisUtterance(contentElement.textContent);
+    
+    // 使用选中的语音
+    const selectedVoice = voices[selectedVoiceIndex];
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
+
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    utterance.onend = () => {
+      togglePlayState(false);
+    };
+
+    togglePlayState(true);
+    speechSynth.speak(utterance);
+  });
+
+  // 切换播放状态和图标
+  function togglePlayState(playing: boolean) {
+    isPlaying = playing;
+    if (playing) {
+      speakerIcon?.classList.add('hidden');
+      stopIcon?.classList.remove('hidden');
+    } else {
+      speakerIcon?.classList.remove('hidden');
+      stopIcon?.classList.add('hidden');
+    }
+  }
+
+  // 当语音列表加载完成时更新选项
+  speechSynthesis.onvoiceschanged = loadVoices;
+</script>

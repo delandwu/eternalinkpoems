@@ -42,15 +42,15 @@ const {
     
     <!-- Footer Logo -->
     <div class="grid grid-cols-12 gap-4 gap-y-8 sm:gap-8 pt-8 md:pt-12">
-      <div class="col-span-12 lg:col-span-4">
+      <div class="col-span-12 lg:col-span-2">
         <div class="mb-2">
           <Logo />
         </div>
-        <div class="mt-6">
+        <div class="mt-6 flex flex-col space-y-2">
           {
             secondaryLinks.map(({ text, href }) => (
               <a
-                class="animated-underline py-1 mr-2 text-sm"
+                class="animated-underline py-1 text-sm"
                 href={href}
                 set:html={text}
               />
@@ -61,8 +61,11 @@ const {
 
       <!-- Footer Links -->
       {
-        links.map(({ title, links }) => (
-          <div class="lg:text-center col-span-6 md:col-span-3 lg:col-span-2">
+        links.map(({ title, links }, index) => (
+          <div class={`lg:text-center col-span-6 md:col-span-3 ${
+            // 所有列都使用相同的宽度 lg:col-span-2
+            'lg:col-span-2'
+          }`}>
             <h4 class="mb-4">{title}</h4>
             {links && Array.isArray(links) && links.length > 0 && (
               <ul>

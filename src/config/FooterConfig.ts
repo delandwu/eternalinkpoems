@@ -41,6 +41,16 @@ export const footerConfig = {
                 { text: '歸去來兮辭', href: '/works/10277' },
             ],
         },
+        {
+            title: '友情連結',
+            links: [
+                { text: 'SearchGPTool', href: 'https://searchgptool.ai' },
+                { text: 'US PhoneGen', href: 'https://usphonegen.com' },
+                { text: '天機占卜', href: 'https://celestialfortunes.net' },
+                { text: 'GPT中文站', href: 'https://chat.uniation.net' },
+                { text: 'ShotEdit', href: 'https://shotedit.net' },
+            ],
+        },
     ],
     secondaryLinks: [
         { text: '服務條款', href: '/terms-of-service' },

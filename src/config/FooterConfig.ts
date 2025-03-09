@@ -44,9 +44,10 @@ export const footerConfig = {
         {
             title: '友情連結',
             links: [
-                { text: 'SearchGPTool', href: 'https://searchgptool.ai' },
-                { text: 'US PhoneGen', href: 'https://usphonegen.com' },
-                { text: '天機占卜', href: 'https://celestialfortunes.net' },
+                { text: 'Easy Favicon', href: 'https://ezfavicon.com' },
+                { text: 'BusinessCardGen', href: 'https://businesscardgen.com' },
+                { text: 'SMS-Act 短信接码', href: 'https://sms-act.net'},                
+                { text: 'US PhoneGen', href: 'https://usphonegen.com' },                
                 { text: 'GPT中文站', href: 'https://chat.uniation.net' },
                 { text: 'ShotEdit', href: 'https://shotedit.net' },
             ],

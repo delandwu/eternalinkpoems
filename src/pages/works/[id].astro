@@ -50,6 +50,9 @@ const meta_title = work.title + " - " + author_name + " - " + config.site.title;
 const description = work.content ? work.content.slice(0, 160) : work.title;
 const canonical = config.site.base_url + `/works/${id}`;
 // console.log('astro canonical: ', Astro.url);
+
+// 获取hideComments配置
+const hideComments = config.settings.hideComments || false;
 ---
 
 <Base meta_title={meta_title} description={description} canonical={canonical}>
@@ -270,9 +273,14 @@ const canonical = config.site.base_url + `/works/${id}`;
         </div>
       </div>
 
-      <SubTitle title="評論區" />
-      <div class="mb-14"></div>
-      <Giscus />
+      <!-- 评论区 -->
+      {!hideComments && (
+        <>
+          <SubTitle title="評論區" />
+          <div class="mb-14"></div>
+          <Giscus />
+        </>
+      )}
     </div>
   </section>
 </Base>

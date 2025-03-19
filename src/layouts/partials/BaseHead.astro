@@ -24,7 +24,11 @@ const { title, meta_title, description, image, noindex, canonical } =
 
 const pageAuthor = config.metadata.meta_author;
 const pageUrl = `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`;
-const pageTitle = meta_title ? meta_title : title ? title : config.site.title;
+const pageTitle = meta_title 
+  ? `${meta_title} | 古典詩詞寶庫 | 中國古典文學`
+  : title 
+    ? `${title} | 古典詩詞寶庫 | 中國古典文學` 
+    : `${config.site.title} - 古典詩詞的數字寶庫 | 中國古典文學`;
 const pageDescription = description ? description : config.metadata.meta_description;
 const pageImage = `${config.site.base_url}${
   image ? image : config.metadata.meta_image
@@ -62,7 +66,7 @@ const isVercel = import.meta.env.VERCEL == 1;
 {noindex && <meta name="robots" content="noindex,nofollow" />}
 
 <!-- site map -->
-<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="sitemap" href="/sitemap.xml" />
 
 <!-- meta-description -->
 <meta name="description" content={pageDescription} />
@@ -104,3 +108,12 @@ const isVercel = import.meta.env.VERCEL == 1;
 {
   isProd && <Analytics />
 }
+
+<!-- 区域相关元标签 -->
+<meta name="geo.region" content="TW" />
+<meta name="geo.position" content="23.5;121" />
+<link rel="alternate" href={`${config.site.base_url}${Astro.url.pathname}`} hreflang="zh-Hant" />
+<meta property="og:locale" content="zh_TW" />
+
+<!-- 增加语言标签 -->
+<html lang="zh-Hant">

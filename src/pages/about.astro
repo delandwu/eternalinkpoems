@@ -4,12 +4,16 @@ import Base from "@/layouts/Base.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import SubTitle from "@/partials/SubTitle.astro";
 import { getEntry } from "astro:content";
+import config from "@/config/config.json";
 
 export const prerender = true;
 
 const about = await getEntry("about", "-index");
 const { Content } = await about.render();
 const { title, description, meta_title, image } = about.data;
+
+// 获取hideComments配置
+const hideComments = config.settings.hideComments || false;
 ---
 
 <Base
@@ -105,9 +109,14 @@ const { title, description, meta_title, image } = about.data;
         </div>
       </div>
 
-      <SubTitle title="評論區" />
-      <div class="mb-14"></div>
-      <Giscus />
+      <!-- 评论区 -->
+      {!hideComments && (
+        <>
+          <SubTitle title="評論區" />
+          <div class="mb-14"></div>
+          <Giscus />
+        </>
+      )}
     </div>
   </section>
 </Base>

@@ -30,3 +30,6 @@ package-lock.json
 # ignore vercel/netlify adapter
 .vercel
 .netlify
+
+# google search console数据
+google-search-console-data/

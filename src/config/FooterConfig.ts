@@ -44,6 +44,7 @@ export const footerConfig = {
         {
             title: '友情連結',
             links: [
+                { text: 'Discord Timestamp', href: 'https://discordtimestamp.club' },
                 { text: 'Easy Favicon', href: 'https://ezfavicon.com' },
                 { text: '學習西班牙語', href: 'https://bestwaytolearnspanish.net' },
                 { text: 'SMS-Act 短信接碼', href: 'https://sms-act.net'},                

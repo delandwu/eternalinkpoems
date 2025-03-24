@@ -1,9 +1,10 @@
 ---
 import Base from "@/layouts/Base.astro";
-import CallToAction from "@/partials/CallToAction.astro";
-import Features from "@/partials/Features.astro";
-import Hero from "@/partials/Hero.astro";
-import Testimonials from "@/partials/Testimonials.astro";
+import CallToAction from "@/layouts/partials/CallToAction.astro";
+import Features from "@/layouts/partials/Features.astro";
+import Hero from "@/layouts/partials/Hero.astro";
+import Testimonials from "@/layouts/partials/Testimonials.astro";
+import HotLinks from "@/layouts/partials/HotLinks.astro";
 
 export const prerender = true;
 
@@ -20,6 +21,13 @@ const description =
   <section id="index-section" class="section py-14">
     <div class="container">
       <Hero />
+    </div>
+  </section>
+
+  <!-- Hot Links Section -->
+  <section id="hot-links-section" class="section py-14">
+    <div class="container">
+      <HotLinks />
     </div>
   </section>
 

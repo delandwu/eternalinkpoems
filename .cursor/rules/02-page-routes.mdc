@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 页面路由结构
+
+网站使用Astro的文件系统路由。主要页面如下：
+
+## 主要页面
+- 首页: [src/pages/index.astro](mdc:src/pages/index.astro)
+- 关于页面: [src/pages/about.astro](mdc:src/pages/about.astro)
+- 详情页面: [src/pages/info.astro](mdc:src/pages/info.astro)
+
+## 动态路由
+- 作品页面: `src/pages/works/`
+- 作者页面: `src/pages/authors/`
+- 朝代页面: `src/pages/dynasties/`
+- 合集页面: `src/pages/collections/`
+
+## 错误页面
+- 404页面: [src/pages/404.astro](mdc:src/pages/404.astro)
+- 500页面: [src/pages/500.astro](mdc:src/pages/500.astro)

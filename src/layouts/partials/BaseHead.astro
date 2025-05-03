@@ -24,11 +24,14 @@ const { title, meta_title, description, image, noindex, canonical } =
 
 const pageAuthor = config.metadata.meta_author;
 const pageUrl = `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`;
+// 优化标题格式，保持在40-60个字符范围内，确保核心关键词在前面
 const pageTitle = meta_title 
-  ? `${meta_title} | 古典詩詞寶庫 | 中國古典文學`
+  ? meta_title.includes(config.site.title) 
+    ? meta_title 
+    : `${meta_title} | ${config.site.title}`
   : title 
-    ? `${title} | 古典詩詞寶庫 | 中國古典文學` 
-    : `${config.site.title} - 古典詩詞的數字寶庫 | 中國古典文學`;
+    ? `${title} - 中國古典詩詞寶庫 | 唐詩宋詞元曲明清詩 | ${config.site.title}` 
+    : `${config.site.title} - 匯聚中國古典詩詞的數字寶庫 | 探索李白杜甫蘇軾作品`;
 const pageDescription = description ? description : config.metadata.meta_description;
 const pageImage = `${config.site.base_url}${
   image ? image : config.metadata.meta_image
@@ -59,17 +62,28 @@ const isVercel = import.meta.env.VERCEL == 1;
   {pageTitle}
 </title>
 
-<!-- canonical url -->
-{canonical && <link rel="canonical" href={canonical} item-prop="url" />}
+<!-- canonical url - 确保每个页面都有规范链接 -->
+<link rel="canonical" href={canonical || pageUrl} item-prop="url" />
 
 <!-- noindex robots -->
 {noindex && <meta name="robots" content="noindex,nofollow" />}
 
-<!-- site map -->
-<link rel="sitemap" href="/sitemap.xml" />
+<!-- site map - 强化SEO -->
+<link rel="sitemap" href="/sitemap.xml" type="application/xml" />
 
-<!-- meta-description -->
-<meta name="description" content={pageDescription} />
+<!-- meta-description - 优化描述内容，控制在140-160字符范围内 -->
+<meta name="description" content={
+  pageDescription 
+    ? pageDescription.length > 140 
+      ? pageDescription.slice(0, 155) + "..." 
+      : pageDescription.padEnd(140, "。探索更多中國古典詩詞作品，盡在永恆墨詩。")
+    : config.metadata.meta_description.length > 140
+      ? config.metadata.meta_description.slice(0, 155) + "..."
+      : config.metadata.meta_description.padEnd(140, "。探索更多中國古典詩詞作品，盡在永恆墨詩。")
+} />
+
+<!-- 添加关键字标签 -->
+<meta name="keywords" content="中国古典诗词,唐诗,宋词,元曲,李白,杜甫,苏轼,李清照,诗歌赏析,古典文学" />
 
 <!-- astro view transition -->
 <ViewTransitions />
@@ -88,6 +102,7 @@ const isVercel = import.meta.env.VERCEL == 1;
 <meta property="og:description" content={pageDescription} />
 <meta property="og:type" content="website" />
 <meta property="og:url" content={pageUrl} />
+<meta property="og:site_name" content={config.site.title} />
 
 <!-- twitter-title -->
 <meta property="twitter:title" content={pageTitle} />
@@ -98,6 +113,17 @@ const isVercel = import.meta.env.VERCEL == 1;
 <!-- twitter-image -->
 <meta property="twitter:image" content={pageImage} />
 <meta property="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content={pageAuthor} />
+
+<!-- 添加内容类型和语言 -->
+<meta property="og:locale" content="zh_TW" />
+<meta http-equiv="content-language" content="zh-Hant" />
+
+<!-- 移动端优化 -->
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
 <!-- Vercel Speed Insights -->
 {
@@ -113,7 +139,16 @@ const isVercel = import.meta.env.VERCEL == 1;
 <meta name="geo.region" content="TW" />
 <meta name="geo.position" content="23.5;121" />
 <link rel="alternate" href={`${config.site.base_url}${Astro.url.pathname}`} hreflang="zh-Hant" />
-<meta property="og:locale" content="zh_TW" />
 
 <!-- 增加语言标签 -->
 <html lang="zh-Hant">
+
+<!-- DNS预获取 -->
+<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+<link rel="dns-prefetch" href="//fonts.gstatic.com" />
+<link rel="dns-prefetch" href="//www.googletagmanager.com" />
+<link rel="dns-prefetch" href="//www.google-analytics.com" />
+
+<!-- 预加载 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

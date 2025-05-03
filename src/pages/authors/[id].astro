@@ -7,6 +7,7 @@ import { table_authors, table_works } from "@/database/schema_sqlite";
 import { localdb as db } from "@/database/localdb";
 import SubTitle from "@/partials/SubTitle.astro";
 import SimpleSpan from "@/components/SimpleSpan.astro";
+import StructuredData from "@/components/StructuredData.astro";
 import {
   Card,
   CardHeader,
@@ -37,13 +38,43 @@ const works = await db
   .where(eq(table_works.author_id, id))
   .orderBy(desc(table_works.show_order));
 
+// 优化SEO元数据 - 确保标题在40-60字符范围内
 const title = author.name;
-const meta_title = author.name + " - " + config.site.title;
-const description = author.intro ? author.intro.slice(0, 160) : author.name;
+const meta_title = `${author.name}简介与${works.length}部作品集 - ${author.dynasty}著名诗人代表作品 | ${config.site.title}`;
+// 优化描述，控制在140-160字符之间
+const description = author.intro 
+  ? `${author.name}(${author.dynasty})，${author.intro?.slice(0, 60)}。此页面收录${author.name}详细生平、文学成就及${works.length}部精选诗词作品。包含代表作《${works[0]?.title || ''}》等经典篇章的原文与赏析。` 
+  : `${author.name}(${author.dynasty})的详细生平简介与${works.length}部作品集，探索这位${author.dynasty}著名诗人的创作历程、文学风格与影响。收录代表作《${works[0]?.title || ''}》等经典篇章。`;
 const canonical = config.site.base_url + `/authors/${id}`;
+
+// 准备结构化数据
+const personData = {
+  name: author.name,
+  dynasty: author.dynasty,
+  intro: author.intro,
+  url: canonical,
+  siteUrl: config.site.base_url,
+  works: works.slice(0, 10).map(work => ({
+    id: work.id,
+    title: work.title
+  }))
+};
 ---
 
 <Base meta_title={meta_title} description={description} canonical={canonical}>
+  <!-- 添加结构化数据 -->
+  <StructuredData type="Person" data={personData} />
+  
+  <!-- 生成面包屑导航结构化数据 -->
+  <StructuredData 
+    type="BreadcrumbList" 
+    data={[
+      { position: 1, name: "首页", item: config.site.base_url },
+      { position: 2, name: author.dynasty, item: `${config.site.base_url}/dynasties/${author.dynasty}` },
+      { position: 3, name: author.name, item: canonical }
+    ]} 
+  />
+  
   <PageHeader title={title} />
   <section class="section px-4 pt-0 pb-0 mb-14 mx-auto">
     <div class="container">

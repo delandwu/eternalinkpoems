@@ -11,6 +11,7 @@ import {
 import { desc, eq, lt, gte, ne } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import SubTitle from "@/partials/SubTitle.astro";
+import StructuredData from "@/components/StructuredData.astro";
 import {
   Card,
   CardDescription,
@@ -47,14 +48,39 @@ const works = await db
   .where(eq(table_works.dynasty, dynasty.name))
   .orderBy(desc(table_works.show_order));
 
-// const description = `詩人:${authors.length} 作品: ${works.length}`;
+// 优化SEO元数据 - 确保标题在40-60字符之间
 const title = dynasty.name;
-const meta_title = dynasty.name + " - " + config.site.title;
-const description = dynasty.intro ? dynasty.intro.slice(0, 300) : dynasty.name;
+const meta_title = `${dynasty.name}诗词精选 - ${authors.length}位诗人${works.length}部经典作品合集 | ${config.site.title}`;
+// 优化描述，控制在140-160字符之间
+const description = dynasty.intro 
+  ? `${dynasty.name}诗词精选，收录${authors.length}位诗人(如${authors[0]?.name || ''}、${authors[1]?.name || ''})共${works.length}部经典作品。探索${dynasty.name}文学风格、代表作家及历史背景，感受这一时期中国古典文学的独特魅力。` 
+  : `${dynasty.name}诗词精选，收录${authors.length}位著名诗人共${works.length}部经典作品，包括${works[0]?.title || ''}、${works[1]?.title || ''}等名篇。探索${dynasty.name}诗词的艺术特色、文学成就与历史价值。`;
 const canonical = config.site.base_url + `/dynasties/${name}`;
+
+// 准备结构化数据
+const articleData = {
+  title: `${dynasty.name}诗词精选`,
+  description: description,
+  author: config.metadata.meta_author,
+  siteName: config.site.title,
+  siteUrl: config.site.base_url,
+  url: canonical
+};
 ---
 
 <Base meta_title={meta_title} description={description} canonical={canonical}>
+  <!-- 添加结构化数据 -->
+  <StructuredData type="Article" data={articleData} />
+  
+  <!-- 生成面包屑导航结构化数据 -->
+  <StructuredData 
+    type="BreadcrumbList" 
+    data={[
+      { position: 1, name: "首页", item: config.site.base_url },
+      { position: 2, name: dynasty.name, item: canonical }
+    ]} 
+  />
+  
   <PageHeader title={title} />
   <section class="section px-4 pt-0 pb-0 mb-14 mx-auto">
     <div class="container">

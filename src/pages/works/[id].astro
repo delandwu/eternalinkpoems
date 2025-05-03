@@ -10,6 +10,8 @@ import {
 import { localdb as db } from "@/database/localdb";
 import SubTitle from "@/partials/SubTitle.astro";
 import Giscus from "@/components/Giscus.astro";
+import StructuredData from "@/components/StructuredData.astro";
+import RelatedWorks from "@/components/RelatedWorks.astro";
 
 export const prerender = true;
 
@@ -43,19 +45,47 @@ const quotes = await db
   .from(table_quotes)
   .where(eq(table_quotes.work_id, id));
 
+// 优化SEO元数据 - 确保标题在40-60字符之间
 const title = work.title;
-const meta_title = work.title + " - " + author_name + " - " + config.site.title;
-// console.log("work title: ", title, ", layout: ", work.layout);
-// const description = work.intro ? work.intro.slice(0, 100) : work.title;
-const description = work.content ? work.content.slice(0, 160) : work.title;
+const meta_title = `《${work.title}》全文及賞析 - ${author_name}${work.dynasty ? ` ${work.dynasty}` : ''}名作 | ${config.site.title}`;
+// 优化描述，包含关键词，控制在140-160字符之间
+const description = work.content 
+  ? `阅读《${work.title}》全文、翻译及详细赏析，了解${author_name}创作这部${work.dynasty}经典作品的历史背景和文学价值。包含注释、翻译和名句赏析，感受${work.dynasty}文学的独特魅力。`
+  : `《${work.title}》- ${author_name}的经典${work.dynasty}作品，包含原文、翻译及详细赏析。探索这部作品的文学价值和历史意义，领略中国古典文学的瑰丽风采。`;
 const canonical = config.site.base_url + `/works/${id}`;
-// console.log('astro canonical: ', Astro.url);
+
+// 准备结构化数据
+const poemData = {
+  title: work.title,
+  author: author_name,
+  authorId: author_id,
+  dynasty: work.dynasty,
+  content: work.content,
+  year: "", // 如果有年份数据，可以在这里添加
+  genre: "", // 作品类型，如诗、词、赋等
+  siteUrl: config.site.base_url,
+  url: canonical
+};
 
 // 获取hideComments配置
 const hideComments = config.settings.hideComments || false;
 ---
 
 <Base meta_title={meta_title} description={description} canonical={canonical}>
+  <!-- 添加结构化数据 -->
+  <StructuredData type="Poem" data={poemData} />
+  
+  <!-- 生成面包屑导航结构化数据 -->
+  <StructuredData 
+    type="BreadcrumbList" 
+    data={[
+      { position: 1, name: "首页", item: config.site.base_url },
+      { position: 2, name: work.dynasty, item: `${config.site.base_url}/dynasties/${work.dynasty}` },
+      { position: 3, name: author_name, item: `${config.site.base_url}/authors/${author_id}` },
+      { position: 4, name: work.title, item: canonical }
+    ]} 
+  />
+  
   <!-- <PageHeader title={title} /> -->
   <section class="section px-4 pt-0 pb-0 mb-14 mx-auto">
     <div class="container">
@@ -273,6 +303,9 @@ const hideComments = config.settings.hideComments || false;
         </div>
       </div>
 
+      <!-- 相关作品推荐 -->
+      <RelatedWorks workId={id} authorId={author_id} dynasty={work.dynasty} />
+
       <!-- 评论区 -->
       {!hideComments && (
         <>
@@ -330,7 +363,7 @@ const hideComments = config.settings.hideComments || false;
   });
 
   // 修改获取语音列表的逻辑
-  function loadVoices() {
+  function loadVoices(): Promise<SpeechSynthesisVoice[]> {
     // Safari 可能需要延迟加载
     return new Promise((resolve) => {
       let availableVoices = speechSynth.getVoices();
@@ -349,22 +382,23 @@ const hideComments = config.settings.hideComments || false;
 
   // 修改更新语音列表UI的函数
   async function updateVoiceList() {
-    const availableVoices = await loadVoices();
+    const availableVoices: SpeechSynthesisVoice[] = await loadVoices();
     
     // 清空现有语音列表
     voices.length = 0;
     
-    // 过滤出唯一的中文语音
-    const uniqueVoices = new Map();
-    availableVoices.forEach(voice => {
+    // 打印所有可用语音，用于调试
+    console.log('所有可用语音:', availableVoices.map(v => `${v.name} (${v.lang})`));
+    
+    // 过滤出中文语音，不进行去重，保留所有方言
+    availableVoices.forEach((voice: SpeechSynthesisVoice) => {
         if (voice.lang.includes('zh')) {
-            // 使用语音名称作为键来去重
-            uniqueVoices.set(voice.name, voice);
+            voices.push(voice);
         }
     });
     
-    // 将去重后的语音添加到列表中
-    voices.push(...uniqueVoices.values());
+    // 按照语言代码排序，确保相似语言的语音分组在一起
+    voices.sort((a, b) => a.lang.localeCompare(b.lang));
     
     if (!voiceList) return;
     
@@ -377,9 +411,14 @@ const hideComments = config.settings.hideComments || false;
             const option = document.createElement('div');
             option.className = `px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 
                 ${i === selectedVoiceIndex ? 'bg-gray-100 dark:bg-gray-700' : ''}`;
+            // 显示更详细的语音信息，包括语言代码
             option.textContent = `${voice.name} (${voice.lang})`;
+            // 添加数据属性以方便调试
+            option.setAttribute('data-voice-lang', voice.lang);
+            option.setAttribute('data-voice-name', voice.name);
             option.addEventListener('click', () => {
                 selectedVoiceIndex = i;
+                console.log(`已选择语音: ${voice.name}, 语言: ${voice.lang}, 索引: ${i}`);
                 updateVoiceList(); // 刷新选中状态
                 closeVoiceMenu();
             });
@@ -399,38 +438,72 @@ const hideComments = config.settings.hideComments || false;
   // 修改朗读功能
   speakButton?.addEventListener('click', async () => {
     if (isPlaying) {
-      speechSynth.cancel();
+      speechSynth.cancel(); // 停止当前播放
       togglePlayState(false);
       return;
     }
 
     const contentElement = document.querySelector('pre');
-    if (!contentElement?.textContent) return;
+    if (!contentElement?.textContent) {
+      console.error('未找到朗读内容');
+      return;
+    }
     
+    // 再次确保之前的播放已停止
     speechSynth.cancel();
+
     const utterance = new SpeechSynthesisUtterance(contentElement.textContent);
     
-    // 确保有可用的语音
+    // 确保语音列表已加载
     if (voices.length === 0) {
+      console.log('语音列表为空，尝试重新加载');
       await updateVoiceList();
+      if (voices.length === 0) {
+        console.error('无法加载语音列表');
+        alert('无法加载语音，请稍后重试或检查浏览器设置。');
+        return;
+      }
     }
     
-    // 使用选中的语音
+    // 获取并设置选中的语音
     const selectedVoice = voices[selectedVoiceIndex];
     if (selectedVoice) {
-      utterance.voice = selectedVoice;
+      // 关键步骤：设置语音对象和语言代码
+      utterance.voice = selectedVoice; 
+      utterance.lang = selectedVoice.lang; 
+      console.log(`尝试使用语音: ${selectedVoice.name} (${selectedVoice.lang}), 索引: ${selectedVoiceIndex}`);
+    } else {
+      console.warn(`索引 ${selectedVoiceIndex} 处未找到有效语音，将使用默认语音`);
+      // 如果找不到选定语音，确保 lang 至少设置为中文
+      utterance.lang = 'zh-CN'; 
     }
 
+    // 设置其他参数
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
     
+    utterance.onstart = () => {
+      console.log('开始朗读...');
+      togglePlayState(true);
+    };
+    
     utterance.onend = () => {
+      console.log('朗读结束.');
       togglePlayState(false);
     };
+    
+    utterance.onerror = (event) => {
+      console.error('语音合成错误:', event.error, '选择的语音:', utterance.voice?.name, '语言:', utterance.lang);
+      togglePlayState(false);
+      alert(`语音播放失败: ${event.error}。请尝试切换语音或检查浏览器设置。`);
+    };
 
-    togglePlayState(true);
-    speechSynth.speak(utterance);
+    // 延迟一小段时间再开始播放，有时有助于解决浏览器问题
+    setTimeout(() => {
+      console.log('执行 speechSynth.speak');
+      speechSynth.speak(utterance);
+    }, 100);
   });
 
   // 切换播放状态和图标
@@ -451,3 +524,4 @@ const hideComments = config.settings.hideComments || false;
     overlay?.classList.add('hidden');
   }
 </script>
+

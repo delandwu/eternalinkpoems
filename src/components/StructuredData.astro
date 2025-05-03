@@ -1,0 +1,161 @@
+---
+// StructuredData.astro - 用于生成各种结构化数据标记
+export interface BreadcrumbItem {
+  name: string;
+  item: string;
+  position: number;
+}
+
+export interface Props {
+  type: "BreadcrumbList" | "Poem" | "Person" | "WebSite" | "Article";
+  data: any;
+}
+
+const { type, data } = Astro.props;
+
+// 生成面包屑导航的结构化数据
+const generateBreadcrumbData = (items: BreadcrumbItem[]) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items.map((item) => ({
+      "@type": "ListItem",
+      "position": item.position,
+      "name": item.name,
+      "item": item.item
+    }))
+  };
+};
+
+// 生成诗歌/文学作品的结构化数据
+const generatePoemData = (data: any) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Poem",
+    "name": data.title,
+    "author": {
+      "@type": "Person",
+      "name": data.author,
+      "sameAs": `${data.siteUrl}/authors/${data.authorId}`
+    },
+    "inLanguage": "zh-classical",
+    "dateCreated": data.year || "",
+    "genre": data.genre || "诗",
+    "isPartOf": {
+      "@type": "Collection",
+      "name": `${data.dynasty}文学作品集`,
+      "url": `${data.siteUrl}/dynasties/${data.dynasty}`
+    },
+    "text": data.content?.slice(0, 1000) || "",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": data.url
+    }
+  };
+};
+
+// 生成人物的结构化数据
+const generatePersonData = (data: any) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": data.name,
+    "alternateName": data.alternateName || "",
+    "birthDate": data.birthYear || "",
+    "deathDate": data.deathYear || "",
+    "description": data.intro || `${data.dynasty}诗人${data.name}的简介与作品集`,
+    "sameAs": data.url,
+    "mainEntityOfPage": {
+      "@type": "ProfilePage",
+      "lastReviewed": new Date().toISOString()
+    },
+    "knowsAbout": ["诗歌", `${data.dynasty}文学`, "中国古典文学"],
+    "jobTitle": data.jobTitle || "诗人",
+    "workLocation": {
+      "@type": "Place",
+      "name": data.dynasty
+    },
+    "workExample": data.works?.map((work: any) => ({
+      "@type": "CreativeWork",
+      "name": work.title,
+      "url": `${data.siteUrl}/works/${work.id}`
+    })) || []
+  };
+};
+
+// 生成网站的结构化数据
+const generateWebSiteData = (data: any) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": data.name,
+    "url": data.url,
+    "description": data.description,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${data.url}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": data.name,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${data.url}/images/logo.png`
+      }
+    }
+  };
+};
+
+// 生成文章的结构化数据
+const generateArticleData = (data: any) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": data.title,
+    "description": data.description,
+    "author": {
+      "@type": "Person",
+      "name": data.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": data.siteName,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${data.siteUrl}/images/logo.png`
+      }
+    },
+    "datePublished": data.datePublished || new Date().toISOString(),
+    "dateModified": data.dateModified || new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": data.url
+    }
+  };
+};
+
+let structuredData;
+
+switch (type) {
+  case "BreadcrumbList":
+    structuredData = generateBreadcrumbData(data);
+    break;
+  case "Poem":
+    structuredData = generatePoemData(data);
+    break;
+  case "Person":
+    structuredData = generatePersonData(data);
+    break;
+  case "WebSite":
+    structuredData = generateWebSiteData(data);
+    break;
+  case "Article":
+    structuredData = generateArticleData(data);
+    break;
+  default:
+    structuredData = {};
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script> 

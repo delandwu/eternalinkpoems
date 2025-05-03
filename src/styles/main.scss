@@ -1,19 +1,23 @@
+@use "base";
+@use "header";
+@use "components";
+@use "navigation";
+@use "buttons";
+@use "search";
+@use "utilities";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  @import "base";
+  // 基础层内容可以放在这里，或通过 base.scss @layer base 控制
 }
 
 @layer components {
-  @import "header";
-  @import "components";
-  @import "navigation";
-  @import "buttons";
-  @import "search";
+  // 组件层内容可以放在这里，或通过相应 scss 文件 @layer components 控制
 }
 
 @layer utilities {
-  @import "utilities";
+  // 工具层内容可以放在这里，或通过 utilities.scss @layer utilities 控制
 }

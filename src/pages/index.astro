@@ -5,17 +5,30 @@ import Features from "@/layouts/partials/Features.astro";
 import Hero from "@/layouts/partials/Hero.astro";
 import Testimonials from "@/layouts/partials/Testimonials.astro";
 import HotLinks from "@/layouts/partials/HotLinks.astro";
+import StructuredData from "@/components/StructuredData.astro";
+import config from "@/config/config.json";
 
 export const prerender = true;
 
-const title = "永恆墨詩 - 古典詩詞的數字寶庫";
-const meta_title = "永恆墨詩 - 古典詩詞的數字寶庫 | 探索古文精華";
+// 优化SEO元数据 - 确保标题在40-60字符之间
+const title = "永恆墨詩 - 匯聚中國古典詩詞的數字寶庫";
+const meta_title = "永恆墨詩 - 中國古典詩詞在線閱讀 | 唐詩宋詞元曲全集 | 李白杜甫蘇軾作品";
+// 优化描述，控制在140-160字符之间
 const description =
-  "探索永恆墨詩，中國古典詩詞的數字寶庫。收錄唐詩宋詞元曲明清詩作，按朝代、詩人、主題輕鬆檢索。精選李白、杜甫、蘇軾、李清照等名家詩作，唐詩三百首、宋詞三百首等經典詩集。每日推薦一詩，感受千年文化傳承的魅力。";
+  "永恆墨詩是最全面的中國古典詩詞數字寶庫，收錄唐詩宋詞元曲明清詩作共萬餘篇。按朝代、詩人、主題輕鬆檢索，精選李白、杜甫、蘇軾、李清照等名家詩作，包含原文、注釋、翻譯與賞析。";
+  
+// 准备网站结构化数据
+const websiteData = {
+  name: config.site.title,
+  url: config.site.base_url,
+  description: config.metadata.meta_description
+};
 // console.log('index meta:', title, meta_title, description);
 ---
 
 <Base title={title} meta_title={meta_title} description={description}>
+  <!-- 添加网站结构化数据 -->
+  <StructuredData type="WebSite" data={websiteData} />
   
   <!-- Hero Section -->
   <section id="index-section" class="section py-14">

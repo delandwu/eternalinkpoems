@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 构建脚本
+
+项目包含几个重要的构建脚本，这些脚本在构建过程中被使用：
+
+## 主要脚本
+- 搜索索引构建: [scripts/build_search.js](mdc:scripts/build_search.js)
+- 日期数据构建: [scripts/build_date.js](mdc:scripts/build_date.js)
+- 移除暗模式: [scripts/removeDarkmode.js](mdc:scripts/removeDarkmode.js)
+
+## 示例数据
+脚本目录中还包含一些示例数据文件：
+- 搜索示例: `scripts/example_search.json`
+- 作品示例: `scripts/example_works.json`
+- 作者示例: `scripts/example_authors.json`
+- 引用示例: `scripts/example_quotes.json`
+
+## 脚本使用
+这些脚本通过package.json中的npm脚本调用：
+```bash
+# 构建搜索索引
+yarn build_search
+
+# 构建日期数据
+yarn build_date
+
+# 开发环境启动（包含搜索和日期数据构建）
+yarn dev
+```

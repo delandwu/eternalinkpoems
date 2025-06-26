@@ -474,8 +474,8 @@ const hideComments = config.settings.hideComments || false;
       console.log(`尝试使用语音: ${selectedVoice.name} (${selectedVoice.lang}), 索引: ${selectedVoiceIndex}`);
     } else {
       console.warn(`索引 ${selectedVoiceIndex} 处未找到有效语音，将使用默认语音`);
-      // 如果找不到选定语音，确保 lang 至少设置为中文
-      utterance.lang = 'zh-CN'; 
+      // 如果找不到选定语音，确保 lang 至少设置为繁体中文
+      utterance.lang = 'zh-Hant'; 
     }
 
     // 设置其他参数

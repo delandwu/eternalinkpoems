@@ -44,13 +44,12 @@ export const footerConfig = {
         {
             title: '友情連結',
             links: [
+                { text: 'SMS-Act 接碼平臺', href: 'https://sms-act.net'},
+                { text: 'GPT-IMG 線上AI影象生成器', href: 'https://gpt-img.com' },                                
                 { text: 'Discord Timestamp', href: 'https://discordtimestamp.club' },
                 { text: 'Easy Favicon', href: 'https://ezfavicon.com' },
-                { text: '學習西班牙語', href: 'https://bestwaytolearnspanish.net' },
-                { text: 'SMS-Act 短信接碼', href: 'https://sms-act.net'},                
-                { text: 'PhoneGen生成随机號碼', href: 'https://usphonegen.com' },                
-                { text: 'GPT中文站', href: 'https://chat.uniation.net' },
-                { text: 'ShotEdit在線圖片編輯', href: 'https://shotedit.net' },
+                { text: '學習西班牙語', href: 'https://bestwaytolearnspanish.net' },                
+                { text: 'ShotEdit線上圖片編輯', href: 'https://shotedit.net' },
             ],
         },
     ],

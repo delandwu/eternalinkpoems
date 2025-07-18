@@ -1,31 +1,24 @@
 import type { APIRoute } from 'astro';
-import fs from 'fs';
-import path from 'path';
+import { localdb as db } from "@/database/localdb";
+import { table_works, table_authors, table_dynasties, table_collections } from "@/database/schema_sqlite";
 
 const siteUrl = 'https://eternalinkpoems.com';
 
 export const GET: APIRoute = async () => {
   try {
-    console.log('Starting sitemap generation from JSON files...');
+    console.log('Starting sitemap generation...');
     
-    // Read JSON files directly as fallback
-    const dataPath = path.resolve(process.cwd(), 'src/database/json');
-    
-    const [worksData, authorsData, dynastiesData, collectionsData] = await Promise.all([
-      fs.promises.readFile(path.join(dataPath, 'works.json'), 'utf8').then(JSON.parse),
-      fs.promises.readFile(path.join(dataPath, 'authors.json'), 'utf8').then(JSON.parse),
-      fs.promises.readFile(path.join(dataPath, 'dynasties.json'), 'utf8').then(JSON.parse),
-      fs.promises.readFile(path.join(dataPath, 'collections.json'), 'utf8').then(JSON.parse)
+    // Use Promise.all to fetch data concurrently for better performance
+    const [works, authors, dynasties, collections] = await Promise.all([
+      db.select({ id: table_works.id, quotes_count: table_works.quotes_count }).from(table_works),
+      db.select({ id: table_authors.id }).from(table_authors),
+      db.select({ name: table_dynasties.name }).from(table_dynasties),
+      db.select({ id: table_collections.id }).from(table_collections)
     ]);
-    
-    const works = worksData.works || [];
-    const authors = authorsData.authors || [];
-    const dynasties = dynastiesData.dynasties || [];
-    const collections = collectionsData.collections || [];
     
     console.log(`Found ${works.length} works, ${authors.length} authors, ${dynasties.length} dynasties, ${collections.length} collections`);
     
-    // Generate XML file
+    // 生成XML文件
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- 静态页面 -->
@@ -43,31 +36,6 @@ export const GET: APIRoute = async () => {
     <loc>${siteUrl}/info</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/works</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/authors</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/collections</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/dynasties</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/today</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
   
   <!-- 作品页面 -->
@@ -95,7 +63,7 @@ export const GET: APIRoute = async () => {
   </url>`).join('')}
   
   <!-- 集合页面 -->
-  ${collections.filter(collection => collection.online_data === 0).map(collection => `
+  ${collections.map(collection => `
   <url>
     <loc>${siteUrl}/collections/${collection.id}</loc>
     <changefreq>monthly</changefreq>
@@ -103,7 +71,7 @@ export const GET: APIRoute = async () => {
   </url>`).join('')}
 </urlset>`;
     
-    console.log('Sitemap generated successfully from JSON files');
+    console.log('Generating sitemap XML...');
     
     return new Response(sitemap, {
       status: 200,
@@ -113,10 +81,11 @@ export const GET: APIRoute = async () => {
       }
     });
   } catch (error) {
-    console.error('Error generating sitemap from JSON:', error);
+    console.error('Error generating sitemap:', error);
     console.error('Error details:', error.message);
+    console.error('Stack trace:', error.stack);
     
-    // Return a basic sitemap with just static pages if JSON files fail
+    // Return a basic sitemap with just static pages if database fails
     const fallbackSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -134,31 +103,6 @@ export const GET: APIRoute = async () => {
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>${siteUrl}/works</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/authors</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/collections</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/dynasties</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/today</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
 </urlset>`;
     
     return new Response(fallbackSitemap, {
@@ -169,4 +113,4 @@ export const GET: APIRoute = async () => {
       }
     });
   }
-};
+}; 

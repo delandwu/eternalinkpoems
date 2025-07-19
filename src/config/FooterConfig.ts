@@ -54,6 +54,8 @@ export const footerConfig = {
         },
     ],
     secondaryLinks: [
+        { text: '常見問題', href: '/faq' },
+        { text: '用戶評價', href: '/reviews' },
         { text: '服務條款', href: '/terms-of-service' },
         { text: '隱私政策', href: '/privacy-policy' },
         { text: '站點地圖', href: '/sitemap.xml' },

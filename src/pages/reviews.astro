@@ -1,0 +1,183 @@
+---
+import Base from "@/layouts/Base.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import { getEntry } from "astro:content";
+import config from "@/config/config.json";
+import { Icon } from "astro-icon/components";
+
+export const prerender = true;
+
+const reviews = await getEntry("reviews", "-index");
+const { title, description, meta_title, image, aggregateRating, reviews: reviewList } = reviews.data;
+
+// SEO optimization
+const pageTitle = title;
+const pageMetaTitle = meta_title || `${title} | ${config.site.title}`;
+const pageDescription = description || "查看永恆墨詩用戶的真實評價和使用體驗分享。";
+const canonical = config.site.base_url + "/reviews";
+
+// Generate star rating display
+const generateStars = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  
+  return {
+    full: fullStars,
+    half: hasHalfStar,
+    empty: emptyStars
+  };
+};
+
+const overallStars = generateStars(aggregateRating.ratingValue);
+
+// Prepare structured data for reviews
+const reviewStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "永恆墨詩 - 中國古典詩詞平台",
+  "description": "收錄唐詩宋詞元曲等數萬首經典作品的中國古典詩詞數字平台",
+  "url": config.site.base_url,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": aggregateRating.ratingValue,
+    "reviewCount": aggregateRating.reviewCount,
+    "bestRating": aggregateRating.bestRating,
+    "worstRating": aggregateRating.worstRating
+  },
+  "review": reviewList.map((review) => ({
+    "@type": "Review",
+    "author": {
+      "@type": "Person",
+      "name": review.author
+    },
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": review.rating,
+      "bestRating": 5,
+      "worstRating": 1
+    },
+    "reviewBody": review.reviewBody,
+    "datePublished": review.datePublished,
+    "name": review.title || ""
+  }))
+};
+---
+
+<Base title={pageTitle} meta_title={pageMetaTitle} description={pageDescription} canonical={canonical}>
+  <!-- Review Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(reviewStructuredData)}></script>
+  
+  <section class="section py-14">
+    <div class="container max-w-6xl">
+      <!-- Page Header -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 dark:text-white mb-6">
+          {markdownify(title)}
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          {markdownify(description)}
+        </p>
+      </div>
+
+      <!-- Aggregate Rating Summary -->
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-8 mb-16">
+        <div class="text-center">
+          <div class="flex items-center justify-center mb-6">
+            <span class="text-6xl font-bold text-gray-800 dark:text-white mr-6">
+              {aggregateRating.ratingValue}
+            </span>
+            <div>
+              <div class="flex items-center mb-3">
+                {Array.from({ length: overallStars.full }, (_, i) => (
+                  <Icon name="tabler:star-filled" class="w-8 h-8 text-yellow-400" />
+                ))}
+                {overallStars.half && (
+                  <Icon name="tabler:star-half-filled" class="w-8 h-8 text-yellow-400" />
+                )}
+                {Array.from({ length: overallStars.empty }, (_, i) => (
+                  <Icon name="tabler:star" class="w-8 h-8 text-gray-300 dark:text-gray-600" />
+                ))}
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 text-lg">
+                基於 {aggregateRating.reviewCount} 位用戶評價
+              </p>
+            </div>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 text-xl">
+            用戶對我們的詩詞平台給予了高度評價，感謝每一位用戶的支持與反饋
+          </p>
+        </div>
+      </div>
+
+      <!-- All Reviews -->
+      <div class="grid md:grid-cols-2 gap-8">
+        {reviewList.map((review) => {
+          const reviewStars = generateStars(review.rating);
+          return (
+            <article class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <!-- Review Header -->
+              <header class="flex items-start justify-between mb-6">
+                <div class="flex-1">
+                  <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+                    {review.author}
+                  </h2>
+                  <div class="flex items-center mb-3">
+                    {Array.from({ length: reviewStars.full }, (_, i) => (
+                      <Icon name="tabler:star-filled" class="w-5 h-5 text-yellow-400" />
+                    ))}
+                    {reviewStars.half && (
+                      <Icon name="tabler:star-half-filled" class="w-5 h-5 text-yellow-400" />
+                    )}
+                    {Array.from({ length: reviewStars.empty }, (_, i) => (
+                      <Icon name="tabler:star" class="w-5 h-5 text-gray-300 dark:text-gray-600" />
+                    ))}
+                    <span class="ml-3 text-gray-500 dark:text-gray-400">
+                      {review.rating}/5 星
+                    </span>
+                  </div>
+                </div>
+                <time class="text-gray-500 dark:text-gray-400" datetime={review.datePublished}>
+                  {new Date(review.datePublished).toLocaleDateString('zh-TW', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </time>
+              </header>
+
+              <!-- Review Title -->
+              {review.title && (
+                <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">
+                  {review.title}
+                </h3>
+              )}
+
+              <!-- Review Content -->
+              <div class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                {review.reviewBody}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <!-- Call to Action -->
+      <div class="mt-16 text-center bg-gray-50 dark:bg-gray-800 rounded-lg p-8">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+          分享您的使用體驗
+        </h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+          您的反饋對我們非常重要。如果您喜歡使用永恆墨詩，歡迎分享您的體驗，幫助我們為更多詩詞愛好者提供更好的服務。
+        </p>
+        <a 
+          href="mailto:admin@eternalinkpoems.com?subject=用戶評價反饋"
+          class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+        >
+          <Icon name="tabler:mail" class="w-5 h-5 mr-2" />
+          發送評價
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

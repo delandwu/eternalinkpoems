@@ -6,6 +6,7 @@ import Hero from "@/layouts/partials/Hero.astro";
 import Testimonials from "@/layouts/partials/Testimonials.astro";
 import HotLinks from "@/layouts/partials/HotLinks.astro";
 import StructuredData from "@/components/StructuredData.astro";
+import ReviewSummary from "@/components/ReviewSummary.astro";
 import config from "@/config/config.json";
 
 export const prerender = true;
@@ -55,6 +56,13 @@ const websiteData = {
   <section id="testimonials-section" class="section py-28">
     <div class="container">
       <Testimonials />
+    </div>
+  </section>
+
+  <!-- Reviews Summary Section -->
+  <section id="reviews-section" class="section py-28">
+    <div class="container">
+      <ReviewSummary maxReviews={6} />
     </div>
   </section>
 

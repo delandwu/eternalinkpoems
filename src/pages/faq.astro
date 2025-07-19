@@ -1,0 +1,140 @@
+---
+import Base from "@/layouts/Base.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import { getEntry } from "astro:content";
+import config from "@/config/config.json";
+import StructuredData from "@/components/StructuredData.astro";
+import { Icon } from "astro-icon/components";
+
+export const prerender = true;
+
+const faq = await getEntry("faq", "-index");
+const { title, description, meta_title, image } = faq.data;
+
+// SEO optimization
+const pageTitle = title;
+const pageMetaTitle = meta_title || `${title} | ${config.site.title}`;
+const pageDescription = description || "永恆墨詩常見問題解答，幫助您更好地使用我們的中國古典詩詞平台。";
+const canonical = config.site.base_url + "/faq";
+
+// Prepare FAQ structured data
+const faqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.data.faqs.map((item) => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }))
+};
+
+// Group FAQs by category
+const faqsByCategory = faq.data.faqs.reduce((acc, faqItem) => {
+  const category = faqItem.category || "其他";
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(faqItem);
+  return acc;
+}, {} as Record<string, typeof faq.data.faqs>);
+---
+
+<Base title={pageTitle} meta_title={pageMetaTitle} description={pageDescription} canonical={canonical}>
+  <!-- FAQ Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqStructuredData)}></script>
+  
+  <section class="section py-14">
+    <div class="container max-w-4xl">
+      <!-- Page Header -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 dark:text-white mb-6">
+          {markdownify(title)}
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          {markdownify(description)}
+        </p>
+      </div>
+
+      <!-- FAQ Categories Navigation -->
+      <div class="mb-12">
+        <nav class="flex flex-wrap justify-center gap-4" aria-label="FAQ Categories">
+          {Object.keys(faqsByCategory).map((category) => (
+            <a 
+              href={`#category-${category.replace(/\s+/g, '-').toLowerCase()}`}
+              class="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              {category}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <!-- FAQ Content by Category -->
+      {Object.entries(faqsByCategory).map(([category, faqs]) => (
+        <div class="mb-12" id={`category-${category.replace(/\s+/g, '-').toLowerCase()}`}>
+          <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-2">
+            {category}
+          </h2>
+          
+          <div class="space-y-4">
+            {faqs.map((faqItem, index) => (
+              <details class="group bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <h3 class="text-lg font-medium text-gray-800 dark:text-white pr-4">
+                    {faqItem.question}
+                  </h3>
+                  <Icon 
+                    name="tabler:chevron-down" 
+                    class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+                
+                <div class="px-6 pb-6">
+                  <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed" set:html={markdownify(faqItem.answer)} />
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <!-- Contact Section -->
+      <div class="mt-16 text-center bg-gray-50 dark:bg-gray-800 rounded-lg p-8">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+          還有其他問題？
+        </h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
+          如果您沒有找到想要的答案，歡迎隨時聯繫我們。我們很樂意為您提供幫助。
+        </p>
+        <a 
+          href="mailto:admin@eternalinkpoems.com"
+          class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+        >
+          <Icon name="tabler:mail" class="w-5 h-5 mr-2" />
+          聯繫我們
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Custom styles for FAQ details/summary */
+  details[open] summary {
+    @apply border-b border-gray-100 dark:border-gray-700;
+  }
+  
+  /* Smooth animation for FAQ expansion */
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  details summary::marker {
+    display: none;
+  }
+</style>

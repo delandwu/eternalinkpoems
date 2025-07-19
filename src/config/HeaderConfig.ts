@@ -55,6 +55,23 @@ export const headerConfig = {
         },
       ],
     },
+    {
+      text: '幫助',
+      links: [
+        {
+          text: '常見問題',
+          href: '/faq',
+        },
+        {
+          text: '用戶評價',
+          href: '/reviews',
+        },
+        {
+          text: '關於我們',
+          href: '/about',
+        },
+      ],
+    },
     // {
     //   text: '诗词百科',
     //   href: '/libai-poetic',

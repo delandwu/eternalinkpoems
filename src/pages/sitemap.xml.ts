@@ -40,6 +40,16 @@ export const GET: APIRoute = async () => {
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>${siteUrl}/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${siteUrl}/reviews</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>${siteUrl}/info</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

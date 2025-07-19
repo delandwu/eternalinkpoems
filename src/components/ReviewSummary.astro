@@ -1,0 +1,178 @@
+---
+import { Icon } from "astro-icon/components";
+import { markdownify } from "@/lib/utils/textConverter";
+import { getEntry } from "astro:content";
+import config from "@/config/config.json";
+
+export interface Props {
+  showTitle?: boolean;
+  maxReviews?: number;
+  className?: string;
+}
+
+const { showTitle = true, maxReviews = 6, className = "" } = Astro.props;
+
+const reviews = await getEntry("reviews", "-index");
+const { aggregateRating, reviews: reviewList } = reviews.data;
+
+// Limit the number of reviews displayed
+const displayedReviews = reviewList.slice(0, maxReviews);
+
+// Generate star rating display
+const generateStars = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  
+  return {
+    full: fullStars,
+    half: hasHalfStar,
+    empty: emptyStars
+  };
+};
+
+const overallStars = generateStars(aggregateRating.ratingValue);
+
+// Prepare structured data for reviews
+const reviewStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "永恆墨詩 - 中國古典詩詞平台",
+  "description": "收錄唐詩宋詞元曲等數萬首經典作品的中國古典詩詞數字平台",
+  "url": config.site.base_url,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": aggregateRating.ratingValue,
+    "reviewCount": aggregateRating.reviewCount,
+    "bestRating": aggregateRating.bestRating,
+    "worstRating": aggregateRating.worstRating
+  },
+  "review": displayedReviews.map((review) => ({
+    "@type": "Review",
+    "author": {
+      "@type": "Person",
+      "name": review.author
+    },
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": review.rating,
+      "bestRating": 5,
+      "worstRating": 1
+    },
+    "reviewBody": review.reviewBody,
+    "datePublished": review.datePublished,
+    "name": review.title || ""
+  }))
+};
+---
+
+<!-- Review Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(reviewStructuredData)}></script>
+
+<div class={`review-summary ${className}`}>
+  {showTitle && (
+    <div class="text-center mb-12">
+      <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white mb-4">
+        用戶評價與反饋
+      </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        來自真實用戶的使用體驗分享，了解永恆墨詩如何幫助詩詞愛好者探索中國古典文學之美
+      </p>
+    </div>
+  )}
+
+  <!-- Aggregate Rating Summary -->
+  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-8 mb-12">
+    <div class="text-center">
+      <div class="flex items-center justify-center mb-4">
+        <span class="text-5xl font-bold text-gray-800 dark:text-white mr-4">
+          {aggregateRating.ratingValue}
+        </span>
+        <div>
+          <div class="flex items-center mb-2">
+            {Array.from({ length: overallStars.full }, (_, i) => (
+              <Icon name="tabler:star-filled" class="w-6 h-6 text-yellow-400" />
+            ))}
+            {overallStars.half && (
+              <Icon name="tabler:star-half-filled" class="w-6 h-6 text-yellow-400" />
+            )}
+            {Array.from({ length: overallStars.empty }, (_, i) => (
+              <Icon name="tabler:star" class="w-6 h-6 text-gray-300 dark:text-gray-600" />
+            ))}
+          </div>
+          <p class="text-gray-600 dark:text-gray-300">
+            基於 {aggregateRating.reviewCount} 位用戶評價
+          </p>
+        </div>
+      </div>
+      <p class="text-gray-700 dark:text-gray-300 text-lg">
+        用戶對我們的詩詞平台給予了高度評價
+      </p>
+    </div>
+  </div>
+
+  <!-- Individual Reviews -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {displayedReviews.map((review) => {
+      const reviewStars = generateStars(review.rating);
+      return (
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <!-- Review Header -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-800 dark:text-white mb-1">
+                {review.author}
+              </h3>
+              <div class="flex items-center mb-2">
+                {Array.from({ length: reviewStars.full }, (_, i) => (
+                  <Icon name="tabler:star-filled" class="w-4 h-4 text-yellow-400" />
+                ))}
+                {reviewStars.half && (
+                  <Icon name="tabler:star-half-filled" class="w-4 h-4 text-yellow-400" />
+                )}
+                {Array.from({ length: reviewStars.empty }, (_, i) => (
+                  <Icon name="tabler:star" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
+                ))}
+                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                  {review.rating}/5
+                </span>
+              </div>
+            </div>
+            <time class="text-sm text-gray-500 dark:text-gray-400" datetime={review.datePublished}>
+              {new Date(review.datePublished).toLocaleDateString('zh-TW')}
+            </time>
+          </div>
+
+          <!-- Review Title -->
+          {review.title && (
+            <h4 class="font-medium text-gray-800 dark:text-white mb-3">
+              {review.title}
+            </h4>
+          )}
+
+          <!-- Review Content -->
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
+            {review.reviewBody}
+          </p>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- View More Reviews Link -->
+  <div class="text-center mt-12">
+    <a 
+      href="/reviews" 
+      class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+    >
+      查看所有評價
+      <Icon name="tabler:arrow-right" class="w-5 h-5 ml-2" />
+    </a>
+  </div>
+</div>
+
+<style>
+  .review-summary {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+</style>
